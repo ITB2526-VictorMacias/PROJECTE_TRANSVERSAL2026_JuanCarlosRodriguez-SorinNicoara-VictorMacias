@@ -22,7 +22,7 @@ Aquest servidor allotja el servei de directori actiu d'InnovateTech mitjançant 
 
 ### 2. Connexió inicial i creació d'usuari administrador
 Connexió inicial amb l'usuari per defecte:
-```bash
+```
 ssh -i PROYECTO_TRANSVERSAL.pem ubuntu@98.83.200.85
 ```
 
