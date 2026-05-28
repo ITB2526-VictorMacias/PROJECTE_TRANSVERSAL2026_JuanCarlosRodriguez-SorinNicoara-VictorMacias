@@ -21,80 +21,24 @@ sudo apt install ansible -y
 ### inventory.ini
 Define les màquines que gestiona Ansible:
 
-```ini
-[websftp]
-localhost ansible_connection=local
+<img width="905" height="150" alt="image" src="https://github.com/user-attachments/assets/7fd51bad-5476-4248-884d-87ed1cbd2588" />
 
-[ldap]
-172.31.28.178 ansible_user=adminitb ansible_ssh_private_key_file=~/.ssh/PROYECTO_TRANSVERSAL.pem
-```
 
 ### setup.yml
 Playbook que automatitza la instal·lació i configuració de tots els serveis:
 
-```yaml
----
-- hosts: websftp
-  become: yes
-  tasks:
-    - name: Instalar Apache
-      apt:
-        name: apache2
-        state: present
-    - name: Iniciar Apache
-      service:
-        name: apache2
-        state: started
-        enabled: yes
-    - name: Instalar libpam-ldap y nslcd
-      apt:
-        name:
-          - libpam-ldap
-          - libnss-ldap
-          - ldap-utils
-          - nslcd
-        state: present
-    - name: Iniciar nslcd
-      service:
-        name: nslcd
-        state: started
-        enabled: yes
-
-- hosts: ldap
-  become: yes
-  tasks:
-    - name: Instalar OpenLDAP
-      apt:
-        name:
-          - slapd
-          - ldap-utils
-        state: present
-    - name: Iniciar slapd
-      service:
-        name: slapd
-        state: started
-        enabled: yes
-```
+<img width="821" height="719" alt="image" src="https://github.com/user-attachments/assets/62c2d7a9-bb50-47bb-ba9d-51e963b97d24" />
 
 ---
 
 ## Execució
 
 ### Verificar connectivitat amb totes les màquines
-```bash
-ansible -i ~/inventory.ini all -m ping
-```
-
-Resultat esperat:
-```
-localhost | SUCCESS => { "ping": "pong" }
-172.31.28.178 | SUCCESS => { "ping": "pong" }
-```
+<img width="644" height="293" alt="image" src="https://github.com/user-attachments/assets/f8b0035d-b032-4c44-a255-12ad42b0a534" />
 
 ### Executar el playbook
-```bash
-sudo ansible-playbook -i ~/inventory.ini ~/setup.yml
-```
+
+<img width="898" height="655" alt="image" src="https://github.com/user-attachments/assets/28285401-9de0-4d16-8983-562ba609e4a7" />
 
 ---
 
