@@ -1,81 +1,164 @@
-# Memoria de Configuración: Servidor Web y SFTP (EC2-1)
+# EC2-1 - Servidor Web (Apache) + SFTP
 
-Este documento detalla los pasos seguidos para configurar el servidor principal de InnovateTech, que se encarga de la web corporativa y de permitir la subida de archivos mediante SFTP utilizando los usuarios alojados en el servidor LDAP (EC2-2).
+## Descripció
+Aquest servidor allotja el servei web d'InnovateTech mitjançant Apache2, i el servei de transferència segura de fitxers (SFTP) autenticat amb els usuaris del directori actiu LDAP (EC2-2).
 
-## Datos de la Instancia
-* IP Pública: 3.227.195.62
-* IP Privada: 172.31.30.217
-* Sistema Operativo: Ubuntu Server 24.04 LTS
-* Tipo de instancia: t2.micro
+- **IP Pública**: 3.227.195.62
+- **IP Privada**: 172.31.30.217
+- **Sistema Operatiu**: Ubuntu Server 24.04 LTS
+- **Tipus d'instància**: t2.micro
 
 ---
 
-## 1. Puesta en marcha y Seguridad
-Lo primero ha sido lanzar la instancia en AWS con el Security Group sg-web-sftp. Hemos configurado las reglas de entrada para permitir tráfico por los puertos 22 (SSH), 80 (HTTP) y 443 (HTTPS).
+## Instal·lació i Configuració
 
-Para mejorar la seguridad, no trabajaremos con el usuario ubuntu. He creado un usuario propio llamado adminitb y le he dado permisos de administrador:
+### 1. Creació de la instància EC2
+- AMI: Ubuntu Server 24.04 LTS
+- Tipus: t2.micro (free tier)
+- Par de claus: `PROYECTO_TRANSVERSAL.pem`
+- Security Group `sg-web-sftp` amb les següents regles d'entrada:
+  - SSH: port 22, source 0.0.0.0/0
+  - HTTP: port 80, source 0.0.0.0/0
+  - HTTPS: port 443, source 0.0.0.0/0
 
-**sudo adduser adminitb**
+### 2. Connexió inicial i creació d'usuari administrador
+Connexió inicial amb l'usuari per defecte:
+```bash
+ssh -i PROYECTO_TRANSVERSAL.pem ubuntu@3.227.195.62
+```
 
-**sudo usermod -aG sudo adminitb**
+Creació de l'usuari administrador específic `adminitb` (no s'utilitza l'usuari per defecte):
+```bash
+sudo adduser adminitb
+sudo usermod -aG sudo adminitb
+sudo mkdir /home/adminitb/.ssh
+sudo cp /home/ubuntu/.ssh/authorized_keys /home/adminitb/.ssh/
+sudo chown -R adminitb:adminitb /home/adminitb/.ssh
+sudo chmod 700 /home/adminitb/.ssh
+sudo chmod 600 /home/adminitb/.ssh/authorized_keys
+```
 
-Para poder entrar sin contraseña, he copiado la clave pública del usuario ubuntu al nuevo directorio .ssh de adminitb. Una vez hecho esto, el acceso se realiza mediante:
+A partir d'aquí totes les connexions es fan amb l'usuari `adminitb`:
+```bash
 ssh -i PROYECTO_TRANSVERSAL.pem adminitb@3.227.195.62
+```
 
----
+### 3. Instal·lació d'Apache
+```bash
+sudo apt update
+sudo apt install apache2 -y
+sudo systemctl enable apache2
+sudo systemctl start apache2
+```
 
-## 2. Instalación del Servidor Web
-He instalado Apache2 para servir la web de la empresa. El proceso ha sido sencillo: actualizar repositorios, instalar el paquete y habilitar el servicio para que arranque automáticamente si se reinicia la máquina.
+### 4. Configuració del SFTP
+OpenSSH ja ve instal·lat a Ubuntu. Es configura per autenticar els usuaris del grup `sftpusers`:
+```bash
+sudo groupadd sftpusers
+sudo nano /etc/ssh/sshd_config
+```
 
-**sudo apt update**
-
-**sudo apt install apache2 -y**
-
-**sudo systemctl enable apache2**
-
-**sudo systemctl start apache2**
-
----
-
-## 3. Configuración del servicio SFTP
-El objetivo es que los usuarios puedan subir archivos de forma segura. He creado un grupo llamado sftpusers y he modificado el archivo de configuración de SSH para "enjaular" a estos usuarios en su carpeta personal.
-
-Al final del fichero /etc/ssh/sshd_config he añadido lo siguiente:
-
+S'afegeix al final del fitxer:
+```
 Subsystem sftp internal-sftp
 Match Group sftpusers
     ChrootDirectory /home/%u
     ForceCommand internal-sftp
     AllowTcpForwarding no
+```
 
-Después de esto, he reiniciado el servicio con sudo systemctl restart ssh.
+```bash
+sudo systemctl restart ssh
+```
+
+### 5. Connexió amb LDAP (EC2-2)
+Instal·lació dels mòduls necessaris per autenticar usuaris via LDAP:
+```bash
+sudo apt install libpam-ldap libnss-ldap ldap-utils nslcd -y
+```
+
+Durant la instal·lació es configura:
+- URI del servidor LDAP: `ldap://172.31.28.178`
+- Distinguished name: `dc=innovatetech,dc=local`
+
+Edició de `/etc/nsswitch.conf` per incloure LDAP:
+```
+passwd:     files ldap
+group:      files ldap
+shadow:     files ldap
+```
+
+Edició de `/etc/nslcd.conf`:
+```
+uri ldap://172.31.28.178
+base dc=innovatetech,dc=local
+```
+
+Reinici del servei:
+```bash
+sudo systemctl restart nslcd
+```
 
 ---
 
-## 4. Integración con el Directorio Activo (LDAP)
-Para no tener que crear los usuarios localmente en esta máquina, la he conectado con el servidor LDAP (EC2-2). He instalado los paquetes necesarios para que el sistema reconozca usuarios externos:
+## Proves de Funcionament
 
-**sudo apt install libpam-ldap libnss-ldap ldap-utils nslcd -y**
+### Apache
+Accés via navegador a `http://3.227.195.62` mostra la pàgina per defecte d'Apache2.
 
-Durante la instalación he configurado la IP del servidor LDAP (172.31.28.178) y el nombre del dominio (dc=innovatetech,dc=local). 
+Verificació de l'estat del servei:
+```bash
+sudo systemctl status apache2
+```
 
-Para que el sistema busque primero en los archivos locales y luego en LDAP, he editado /etc/nsswitch.conf añadiendo la opción ldap en las líneas de passwd, group y shadow.
+### LDAP
+Verificació que EC2-1 veu els usuaris del LDAP d'EC2-2:
+```bash
+getent passwd juancarlos
+```
+
+Verificació de connectivitat amb EC2-2:
+```bash
+telnet 172.31.28.178 389
+```
 
 ---
 
-## Pruebas de funcionamiento
-Para verificar que todo está bien configurado, he realizado estas comprobaciones:
+## Incidències i Solucions
 
-* Web: Al entrar en la IP pública desde un navegador, carga la página por defecto de Apache.
-* LDAP: Al ejecutar getent passwd juancarlos, el sistema devuelve correctamente los datos del usuario que está en la otra máquina.
-* Conectividad: He comprobado con telnet que hay conexión al puerto 389 de la IP privada del servidor LDAP.
+### Problema 1: IP incorrecta en la configuració de nslcd
+Durant la configuració de la connexió amb LDAP, es va introduir la IP `172.31.28.170` en lloc de la IP correcta `172.31.28.178`. Això va causar que `getent passwd juancarlos` no retornés res.
+
+**Solució**: Es va reconfigurar `ldap-auth-config` amb la IP correcta:
+```bash
+sudo dpkg-reconfigure ldap-auth-config
+```
+
+### Problema 2: Ansible no podia connectar a EC2-2
+Ansible donava error `Permission denied (publickey)` en intentar connectar a EC2-2 perquè l'usuari `adminitb` d'EC2-2 no tenia la carpeta `.ssh` ni el fitxer `authorized_keys`.
+
+**Solució**: Es va crear la carpeta i copiar la clau pública des del usuari ubuntu:
+```bash
+sudo mkdir -p /home/adminitb/.ssh
+sudo cp /home/ubuntu/.ssh/authorized_keys /home/adminitb/.ssh/authorized_keys
+sudo chown -R adminitb:adminitb /home/adminitb/.ssh
+sudo chmod 700 /home/adminitb/.ssh
+sudo chmod 600 /home/adminitb/.ssh/authorized_keys
+```
+
+### Problema 3: Ansible requeria contrasenya de sudo
+Ansible fallava amb `sudo: a password is required` perquè l'usuari `adminitb` necessitava contrasenya per executar comandes amb sudo.
+
+**Solució**: Es va afegir la regla NOPASSWD al fitxer sudoers:
+```bash
+sudo visudo
+# S'afegeix: adminitb ALL=(ALL) NOPASSWD: ALL
+```
 
 ---
 
-## Incidencias y soluciones
+## Justificació de Tecnologies
 
-1. Error en la IP del LDAP: Al configurar nslcd me equivoqué en un número de la IP privada. El comando getent no devolvía nada. Lo he solucionado reconfigurando el paquete con sudo dpkg-reconfigure ldap-auth-config.
-
-2. Error de permisos en Ansible: Cuando intenté usar Ansible desde esta máquina hacia la EC2-2, daba fallo de clave pública. He tenido que crear manualmente la carpeta .ssh en el destino y copiar la clave autorizada con los permisos correctos (700 para la carpeta y 600 para el archivo).
-
-3. Contraseña en sudo: Ansible se bloqueaba al pedir la contraseña de root. He editado el archivo sudoers con visudo para permitir que el usuario adminitb ejecute comandos sin que se le pida la clave (NOPASSWD).
+- **Apache2**: Servidor web de codi obert, ampliament utilitzat en entorns empresarials, lleuger i fàcil de configurar.
+- **OpenSSH SFTP**: Integrat al sistema operatiu, segur i compatible amb autenticació LDAP.
+- **nslcd + libpam-ldap**: Permeten integrar l'autenticació de Linux amb un servidor LDAP extern de forma transparent.
