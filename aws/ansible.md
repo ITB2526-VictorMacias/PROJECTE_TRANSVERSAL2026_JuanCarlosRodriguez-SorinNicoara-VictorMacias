@@ -9,10 +9,10 @@ Ansible s'utilitza per automatitzar la configuració de les màquines EC2-1 i EC
 
 Ansible s'instal·la a **EC2-1**, que actua com a màquina de control:
 
-```bash
-sudo apt update
-sudo apt install ansible -y
-```
+
+-  sudo apt update
+-  sudo apt install ansible -y
+
 
 ---
 
@@ -45,34 +45,34 @@ Playbook que automatitza la instal·lació i configuració de tots els serveis:
 ## Incidències i Solucions
 
 ### Problema 1: sudo: a password is required
-Ansible fallava perquè l'usuari `adminitb` necessitava contrasenya per executar comandes amb sudo.
+Ansible fallava perquè l'usuari adminitb necessitava contrasenya per executar comandes amb sudo.
 
 **Solució**: Afegir NOPASSWD al fitxer sudoers de les dues màquines:
-```bash
-sudo visudo
+
+-  sudo visudo
 # S'afegeix: adminitb ALL=(ALL) NOPASSWD: ALL
-```
+
 
 ### Problema 2: Permission denied (publickey) a EC2-2
-Ansible no podia connectar a EC2-2 perquè el fitxer `.pem` estava a `/home/adminitb/.ssh/` però quan s'executava amb `sudo` el buscava a `/root/.ssh/`.
+Ansible no podia connectar a EC2-2 perquè el fitxer .pem estava a /home/adminitb/.ssh/ però quan s'executava amb sudo el buscava a /root/.ssh/.
 
-**Solució**: Copiar el fitxer `.pem` a la carpeta de root:
-```bash
-sudo cp ~/.ssh/PROYECTO_TRANSVERSAL.pem /root/.ssh/
-sudo chmod 400 /root/.ssh/PROYECTO_TRANSVERSAL.pem
-```
+**Solució**: Copiar el fitxer .pem a la carpeta de root:
+
+-  sudo cp ~/.ssh/PROYECTO_TRANSVERSAL.pem /root/.ssh/
+-  sudo chmod 400 /root/.ssh/PROYECTO_TRANSVERSAL.pem
+
 
 ### Problema 3: Clau pública no trobada a EC2-2
-L'usuari `adminitb` d'EC2-2 no tenia la carpeta `.ssh` ni el fitxer `authorized_keys`, impedint la connexió SSH.
+L'usuari adminitb d'EC2-2 no tenia la carpeta .ssh ni el fitxer authorized_keys, impedint la connexió SSH.
 
 **Solució**: Copiar la clau pública des del usuari ubuntu d'EC2-2:
-```bash
-sudo mkdir -p /home/adminitb/.ssh
-sudo cp /home/ubuntu/.ssh/authorized_keys /home/adminitb/.ssh/authorized_keys
-sudo chown -R adminitb:adminitb /home/adminitb/.ssh
-sudo chmod 700 /home/adminitb/.ssh
-sudo chmod 600 /home/adminitb/.ssh/authorized_keys
-```
+
+sudo mkdir -p /home/adminitb/.ssh  
+sudo cp /home/ubuntu/.ssh/authorized_keys /home/adminitb/.ssh/authorized_keys  
+sudo chown -R adminitb:adminitb /home/adminitb/.ssh  
+sudo chmod 700 /home/adminitb/.ssh  
+sudo chmod 600 /home/adminitb/.ssh/authorized_keys  
+
 
 ---
 
