@@ -3,15 +3,14 @@ Aquest document recull la configuració, desplegament i proves realitzades per l
 L'objectiu principal és desplegar i configurar dos servidors EC2 a AWS:
 ServidorRolServeiEC2-3Centralització de logsRsyslog (port 514 TCP/UDP)EC2-4Streaming d'àudioIcecast2 + ffmpeg (port 8000)
 A més, s'han realitzat proves d'ample de banda per validar que la infraestructura suporta els serveis multimèdia.
-
 2. Infraestructura AWS
+
 2.1 Instàncies EC2
 InstànciaIDIP PúblicaIP PrivadaRolEC2-3i-0875f0b0f58d8fe0d44.223.189.225172.31.18.93Logs (Rsyslog)EC2-4i-0ef328d9b36ca419854.205.214.70172.31.31.131Àudio (Icecast2)
 ![Speedtest](https://github.com/user-attachments/assets/8d8eb9a3-1553-498b-b8c6-afc4b4cebbe2)
 2.2 Connexions SSH
 bash# EC2-3 (Logs)
 ssh -i '/home/juan.rodriguez.7e9/Baixades/PROYECTO_TRANSVERSAL.pem' ubuntu@44.223.189.225
-
 # EC2-4 (Àudio)
 ssh -i '/home/juan.rodriguez.7e9/Baixades/PROYECTO_TRANSVERSAL.pem' ubuntu@54.205.214.70
 2.3 Security Groups
