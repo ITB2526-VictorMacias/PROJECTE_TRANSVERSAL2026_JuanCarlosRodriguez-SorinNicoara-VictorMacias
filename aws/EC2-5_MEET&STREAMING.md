@@ -223,7 +223,8 @@ URLs de acceso
 ServicioURLJitsi Meet  
 [https://34.196.1.142/](https://34.196.1.142/)  
 Navegador  
- 
+ <img width="944" height="981" alt="image" src="https://github.com/user-attachments/assets/3eec1194-8c7e-48f0-8917-fe04e1d72719" />
+
 [https://34.196.1.142/stream](https://34.196.1.142/stream)  
 VLC  
 <img width="541" height="301" alt="image" src="https://github.com/user-attachments/assets/0fda0481-ec12-4e5d-b44c-4948af8376dc" />
