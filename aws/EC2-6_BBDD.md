@@ -87,5 +87,6 @@ Log de intentos no autorizados: si un usuario con permisos limitados intenta hac
 <img width="711" height="482" alt="image" src="https://github.com/user-attachments/assets/eb4bb847-2e71-4067-a500-867fdcf770e3" />
 
 3.4.2 Decisión de Ingeniería: Administración por CLI
+
 Descartado Adminer por las incompatibilidades descritas anteriormente, se decidió que toda la administración del motor se realizaría directamente por línea de comandos conectando a EC2-6. Esto elimina cualquier panel web expuesto a la red y restringe el acceso únicamente a usuarios con sesión SSH activa en la instancia.
 El diagnóstico y mantenimiento del servicio se realiza con comandos nativos del sistema y consultas SQL directas sobre la base de datos innovatetech.
