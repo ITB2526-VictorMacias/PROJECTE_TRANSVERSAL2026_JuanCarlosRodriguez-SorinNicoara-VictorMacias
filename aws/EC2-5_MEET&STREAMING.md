@@ -110,11 +110,14 @@ sudo sed \-i "s|bosh: 'https://34.196.1.142/' \+ subdir \+ 'http-bind',|bosh: 'h
 sudo sed \-i "s|websocket: 'wss://34.196.1.142/' \+ subdir \+ 'xmpp-websocket',|//websocket: 'wss://34.196.1.142/xmpp-websocket',|" /etc/jitsi/meet/34.196.1.142-config.js  
 Verificamos:  
 sudo grep \-E "bosh|websocket" /etc/jitsi/meet/34.196.1.142-config.js  
-![][image2]  
-![][image3]  
-![][image4]  
-![][image5]  
-![][image5]  
+<img width="954" height="911" alt="Captura de pantalla 2026-05-28 190623" src="https://github.com/user-attachments/assets/d0de4fff-aec7-4349-a73b-3a68e694590b" />
+<img width="542" height="570" alt="Captura de pantalla 2026-05-28 192746" src="https://github.com/user-attachments/assets/3a727b08-dbd3-4c93-a9eb-bf18e5218a1d" />
+<img width="1179" height="2556" alt="97418" src="https://github.com/user-attachments/assets/6e18837e-e0ed-41fc-ad87-2ca3e7fc568f" />
+
+<img width="317" height="191" alt="image" src="https://github.com/user-attachments/assets/5adc7467-fd63-4be1-9912-e66f209a764b" />
+
+ <img width="314" height="192" alt="image" src="https://github.com/user-attachments/assets/39cadbea-8754-446c-a22c-bf7812d65f6c" />
+
 AMB SPEEDTEST-CLI
 
 |  | LATENCIA | DESCARGA | CARGA |
@@ -139,6 +142,8 @@ sudo systemctl restart jicofo
 
 sudo systemctl status prosody jitsi-videobridge2 jicofo \--no-pager | grep \-E "Active|●"  
 Los 3 deben mostrar active (running).
+<img width="949" height="210" alt="image" src="https://github.com/user-attachments/assets/2978f39a-5a41-4425-b87c-a6dbdb374fee" />
+
 
 **FASE 11 — Verificar logs**  
 sudo tail \-30 /var/log/jitsi/jvb.log | grep \-E "Joined|Connected"  
@@ -170,6 +175,8 @@ nginxrtmp {
         }  
     }  
 }
+<img width="393" height="221" alt="image" src="https://github.com/user-attachments/assets/cf71218f-33ec-4da5-8058-a63ccb04674a" />
+
 
 Crear directorio HLS  
 sudo mkdir \-p /var/www/html/hls  
@@ -191,6 +198,9 @@ nginxserver {
         add\_header Access-Control-Allow-Origin \*;  
     }  
 }  
+<img width="467" height="255" alt="image" src="https://github.com/user-attachments/assets/2183db7d-ccbb-44ad-85e2-5d252ed50df3" />
+
+
 Activar:  
 sudo ln \-s /etc/nginx/sites-available/streaming /etc/nginx/sites-enabled/streaming  
 sudo nginx \-t && sudo systemctl reload nginx
@@ -213,7 +223,7 @@ URLs de acceso
 ServicioURLJitsi Meet  
 [https://34.196.1.142/](https://34.196.1.142/)  
 Navegador  
-![][image6]  
+ 
 [https://34.196.1.142/stream](https://34.196.1.142/stream)  
 VLC  
 ![][image7]  
