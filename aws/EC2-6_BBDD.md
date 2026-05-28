@@ -84,9 +84,18 @@ Para no depender de que nadie "se olvide" de registrar algo, la auditoría está
 
 Control de cuota de comunicación: antes de insertar cualquier llamada, un trigger comprueba si el usuario ha agotado sus minutos mensuales. Si los ha superado, lanza un SIGNAL SQLSTATE y la inserción se cancela automáticamente.  
 Log de intentos no autorizados: si un usuario con permisos limitados intenta hacer algo que no debería, el sistema lo registra solo en la tabla AVISOS — quién lo intentó, qué operación era y en qué momento exacto — sin que el usuario infractor pueda evitarlo ni saberlo.
-<img width="711" height="482" alt="image" src="https://github.com/user-attachments/assets/eb4bb847-2e71-4067-a500-867fdcf770e3" />
+
+
+3.4.1 Diagnóstico de Conflictos en el Despliegamiento de Adminer
+
+La primera aproximación para gestionar la base de datos fue desplegar Adminer en el servidor web EC2-5. Durante las pruebas, sin embargo, aparecieron dos problemas que lo hicieron inviable.
+El primero fue un conflicto con Jitsi Meet. Nginx estaba configurado de forma muy restrictiva para dar servicio a la plataforma de videoconferencia, de modo que cualquier petición a un fichero .php era interceptada e interpretada como el nombre de una sala de llamada, en lugar de ejecutarse como código PHP.
+El segundo problema apareció al instalar las dependencias de PHP. El gestor de paquetes de Ubuntu levantó Apache2 automáticamente en segundo plano, lo que provocó un conflicto de puertos inmediato: Nginx ya ocupaba el puerto 80 en exclusiva para Jitsi, y Apache no pudo arrancar.
+Ante esto, se descartó Adminer y se optó por la administración nativa por CLI, tal como se describe en el apartado siguiente.
 
 3.4.2 Decisión de Ingeniería: Administración por CLI
 
 Descartado Adminer por las incompatibilidades descritas anteriormente, se decidió que toda la administración del motor se realizaría directamente por línea de comandos conectando a EC2-6. Esto elimina cualquier panel web expuesto a la red y restringe el acceso únicamente a usuarios con sesión SSH activa en la instancia.
 El diagnóstico y mantenimiento del servicio se realiza con comandos nativos del sistema y consultas SQL directas sobre la base de datos innovatetech.
+
+<img width="711" height="482" alt="image" src="https://github.com/user-attachments/assets/eb4bb847-2e71-4067-a500-867fdcf770e3" />
