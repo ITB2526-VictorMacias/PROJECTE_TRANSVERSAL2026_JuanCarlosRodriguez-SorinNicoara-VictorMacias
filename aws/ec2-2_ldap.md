@@ -19,6 +19,7 @@ Aquest servidor allotja el servei de directori actiu d'InnovateTech mitjançant 
 - Security Group `sg-ldap` amb les següents regles d'entrada:
   - SSH: port 22, source 0.0.0.0/0
   - LDAP: port 389, source 0.0.0.0/0
+<img width="902" height="762" alt="image" src="https://github.com/user-attachments/assets/8d4dd63d-cbeb-4c99-809f-af10a6ed1849" />
 
 ### 2. Connexió inicial i creació d'usuari administrador
 Connexió inicial amb l'usuari per defecte:
@@ -47,53 +48,33 @@ sudo apt install slapd ldap-utils -y
 ```bash
 sudo dpkg-reconfigure slapd
 ```
+<img width="897" height="495" alt="image" src="https://github.com/user-attachments/assets/818a6818-2e06-4eb9-9727-0e1c073d0131" />
+<img width="901" height="645" alt="image" src="https://github.com/user-attachments/assets/a5e88cfc-ae33-48dd-99c5-a2cb12ad33c6" />
+
 
 Opcions seleccionades:
 - Omit OpenLDAP server configuration? → **No**
 - DNS domain name → `innovatetech.local`
 - Organization name → `InnovateTech`
-- Admin password → *(contrasenya segura)*
+- Admin password → *@ITB2026*
 - Remove database when purging? → **No**
 - Move old database? → **Yes**
 
 ### 5. Creació de l'estructura de directoris
 Fitxer `base.ldif`:
-```ldif
-dn: ou=users,dc=innovatetech,dc=local
-objectClass: organizationalUnit
-ou: users
+<img width="547" height="183" alt="image" src="https://github.com/user-attachments/assets/ac8cbf70-8a6e-4bab-879d-dcad371dd399" />
 
-dn: ou=groups,dc=innovatetech,dc=local
-objectClass: organizationalUnit
-ou: groups
-```
+<img width="899" height="141" alt="image" src="https://github.com/user-attachments/assets/098d8460-eb38-4046-8554-ba6711856101" />
 
-```bash
-ldapadd -x -D cn=admin,dc=innovatetech,dc=local -W -f base.ldif
-```
 
 ### 6. Creació d'usuari de prova
 Per generar el hash de la contrasenya:
-```bash
-slappasswd
-```
+<img width="576" height="159" alt="image" src="https://github.com/user-attachments/assets/62d7baf8-e0b5-44a6-934d-68dea35859d5" />
 
-Fitxer `user1.ldif`:
-```ldif
-dn: uid=juancarlos,ou=users,dc=innovatetech,dc=local
-objectClass: inetOrgPerson
-objectClass: posixAccount
-objectClass: shadowAccount
-uid: juancarlos
-sn: Carlos
-givenName: Juan
-cn: Juan Carlos
-uidNumber: 10001
-gidNumber: 10001
-homeDirectory: /home/juancarlos
-loginShell: /bin/bash
-userPassword: {SSHA}hsFfDrpgybv/tni131tfi09HIxaveKGe
-```
+Fitxer **user1.ldif:**
+
+<img width="723" height="279" alt="image" src="https://github.com/user-attachments/assets/70d180a6-e716-4a78-910d-570634d4acba" />
+
 
 ```bash
 ldapadd -x -D cn=admin,dc=innovatetech,dc=local -W -f user1.ldif
@@ -113,26 +94,15 @@ sudo visudo
 ```bash
 ldapsearch -x -LLL -H ldap:// -b dc=innovatetech,dc=local
 ```
+<img width="895" height="189" alt="image" src="https://github.com/user-attachments/assets/133f59b5-516b-4e8d-9c7a-3c622c6f2081" />
 
-Resultat esperat:
-```
-dn: dc=innovatetech,dc=local
-dn: ou=users,dc=innovatetech,dc=local
-dn: ou=groups,dc=innovatetech,dc=local
-dn: uid=juancarlos,ou=users,dc=innovatetech,dc=local
-```
-
-### Verificació de connectivitat des d'EC2-1
-Des d'EC2-1 es verifica que pot contactar amb EC2-2:
-```bash
-telnet 172.31.28.178 389
-```
 
 ### Verificació que EC2-1 veu els usuaris LDAP
 Des d'EC2-1:
 ```bash
 getent passwd juancarlos
 ```
+<img width="645" height="57" alt="image" src="https://github.com/user-attachments/assets/d15c2422-a0dc-4194-b078-c5ca88aefffb" />
 
 ---
 
