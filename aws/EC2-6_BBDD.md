@@ -52,7 +52,8 @@ Se crearon tres roles diferenciados:
 Rol admin: acceso completo — puede leer, escribir, modificar estructuras y consultar la tabla de logs de auditoría.  
 Rol vendes: permisos operativos básicos (SELECT, INSERT, UPDATE) sobre clientes, pedidos y metadatos de llamadas. No puede tocar la estructura de la base de datos.  
 Rol administracio: gestiona únicamente lo relacionado con personal: empleados y departamentos.
-<img width="825" height="368" alt="image" src="https://github.com/user-attachments/assets/ed22b74d-55d7-4857-8ed32f637023a0bb" />
+<img width="838" height="369" alt="image" src="https://github.com/user-attachments/assets/bf39f52d-87de-4783-9f17-9278c882449d" />
+
 
 Un ejemplo de cómo se configura esto en SQL:  
 sql-- Creación de roles  
