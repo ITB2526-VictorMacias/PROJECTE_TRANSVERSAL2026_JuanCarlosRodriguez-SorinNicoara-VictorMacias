@@ -77,6 +77,7 @@ ice4j {
         }  
     }  
 }
+<img width="627" height="517" alt="Captura de pantalla 2026-05-28 190220" src="https://github.com/user-attachments/assets/934d1282-e8d2-4033-8d05-887ea696f575" />
 
 **FASE 6 — Configurar Jicofo**  
 sudo nano /etc/jitsi/jicofo/jicofo.conf  
