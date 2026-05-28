@@ -28,32 +28,32 @@ S'ha creat la instància amb els paràmetres següents: AMI Ubuntu Server 24.04 
 
 La connexió inicial es fa amb l'usuari per defecte ubuntu:
 
-    ssh -i PROYECTO_TRANSVERSAL.pem ubuntu@3.227.195.62
+-    ssh -i PROYECTO_TRANSVERSAL.pem ubuntu@3.227.195.62
     
 <img width="598" height="550" alt="Captura de pantalla 2026-05-28 192325" src="https://github.com/user-attachments/assets/cb6a978b-fcbc-413c-a8ba-c6d46eb8e316" />
 
 A continuació es crea l'usuari administrador específic "adminitb", ja que no es vol fer servir el compte per defecte. Es copia la clau pública i s'estableixen els permisos correctes a la carpeta .ssh:
 
-   sudo adduser adminitb  
-   sudo usermod -aG sudo adminitb  
-   sudo mkdir /home/adminitb/.ssh  
-   sudo cp /home/ubuntu/.ssh/authorized_keys /home/adminitb/.ssh/  
-   sudo chown -R adminitb:adminitb /home/adminitb/.ssh  
-   sudo chmod 700 /home/adminitb/.ssh  
-   sudo chmod 600 /home/adminitb/.ssh/authorized_keys  
+sudo adduser adminitb  
+sudo usermod -aG sudo adminitb
+sudo mkdir /home/adminitb/.ssh  
+sudo cp /home/ubuntu/.ssh/authorized_keys /home/adminitb/.ssh/  
+sudo chown -R adminitb:adminitb /home/adminitb/.ssh  
+sudo chmod 700 /home/adminitb/.ssh  
+sudo chmod 600 /home/adminitb/.ssh/authorized_keys  
 
 A partir d'aquí totes les connexions es fan amb l'usuari adminitb:
 
-    ssh -i PROYECTO_TRANSVERSAL.pem adminitb@3.227.195.62
+-    ssh -i PROYECTO_TRANSVERSAL.pem adminitb@3.227.195.62
 
 ### 3. Instal·lació d'Apache
 
 S'instal·la Apache2 i s'activa perquè s'iniciï automàticament amb el sistema:
 
-    sudo apt update
-    sudo apt install apache2 -y
-    sudo systemctl enable apache2
-    sudo systemctl start apache2
+sudo apt update    
+sudo apt install apache2 -y    
+sudo systemctl enable apache2    
+sudo systemctl start apache2    
     
 <img width="854" height="308" alt="image" src="https://github.com/user-attachments/assets/bf70341d-53c7-4fd6-baa0-85bcff422898" />
 
@@ -61,8 +61,8 @@ S'instal·la Apache2 i s'activa perquè s'iniciï automàticament amb el sistema
 
 OpenSSH ja ve instal·lat a Ubuntu per defecte. Es crea el grup "sftpusers" i es modifica el fitxer de configuració del servei SSH per forçar l'ús de l'SFTP intern i limitar cada usuari al seu directori home (chroot):
 
-    sudo groupadd sftpusers
-    sudo nano /etc/ssh/sshd_config
+-    sudo groupadd sftpusers  
+-    sudo nano /etc/ssh/sshd_config  
 
 Al final del fitxer s'afegeix el bloc següent:
 
@@ -70,7 +70,7 @@ Al final del fitxer s'afegeix el bloc següent:
 
 Finalment es reinicia el servei:
 
-    sudo systemctl restart ssh
+-    sudo systemctl restart ssh
 
 ### 5. Connexió amb LDAP (EC2-2)
 
@@ -78,27 +78,24 @@ Finalment es reinicia el servei:
 
 Per poder autenticar els usuaris del directori actiu des d'aquest servidor, cal instal·lar els mòduls de PAM i NSS per LDAP:
 
-    sudo apt install libpam-ldap libnss-ldap ldap-utils nslcd -y
+-    sudo apt install libpam-ldap libnss-ldap ldap-utils nslcd -y
 
 Durant el procés d'instal·lació es configura la URI del servidor LDAP (ldap://172.31.28.178) i el Distinguished Name de base (dc=innovatetech,dc=local).
 <img width="903" height="596" alt="image" src="https://github.com/user-attachments/assets/37282f22-ae42-459d-80e2-5a9bdaa54225" />
 
 
 Després s'edita el fitxer /etc/nsswitch.conf per indicar al sistema que també consulti LDAP per resoldre usuaris, grups i contrasenyes:
-
-    passwd:     files ldap
-    group:      files ldap
-    shadow:     files ldap
+    
 <img width="869" height="513" alt="image" src="https://github.com/user-attachments/assets/86376f9c-7cbe-42be-b2bf-ab4858b5c113" />
 
 I el fitxer /etc/nslcd.conf amb les dades del servidor:
 
-    uri ldap://172.31.28.178
-    base dc=innovatetech,dc=local
+uri ldap://172.31.28.178  
+base dc=innovatetech,dc=local  
 
 Per aplicar els canvis:
 
-    sudo systemctl restart nslcd
+-    sudo systemctl restart nslcd
 
 ---
 
@@ -108,18 +105,15 @@ Per aplicar els canvis:
 
 S'accedeix al navegador amb la IP pública http://3.227.195.62 i es comprova que apareix la pàgina de benvinguda per defecte d'Apache2. També es verifica l'estat del servei per confirmar que està actiu:
 
-    sudo systemctl status apache2
+-    sudo systemctl status apache2
 
 ### LDAP
 
 Es comprova que el servidor EC2-1 és capaç de resoldre els usuaris definits a l'LDAP de l'EC2-2:
 
-    getent passwd juancarlos
+-    getent passwd juancarlos
+
 <img width="624" height="56" alt="image" src="https://github.com/user-attachments/assets/279eb1a3-7786-4470-9fca-0c94a950d5b1" />
-
-I la connectivitat de xarxa amb l'EC2-2 pel port 389:
-
-    telnet 172.31.28.178 389
 
 ---
 
@@ -131,7 +125,7 @@ Durant la configuració de la connexió amb LDAP es va introduir la IP 172.31.28
 
 Solució: Es va tornar a executar la configuració de ldap-auth-config amb la IP correcta:
 
-    sudo dpkg-reconfigure ldap-auth-config
+-    sudo dpkg-reconfigure ldap-auth-config
 
 ### Problema 2: Ansible no podia connectar a EC2-2
 
@@ -139,11 +133,11 @@ Ansible retornava l'error "Permission denied (publickey)" en intentar accedir a 
 
 Solució: Es va crear la carpeta manualment i es va copiar la clau pública des del compte ubuntu:
 
-    sudo mkdir -p /home/adminitb/.ssh
-    sudo cp /home/ubuntu/.ssh/authorized_keys /home/adminitb/.ssh/authorized_keys
-    sudo chown -R adminitb:adminitb /home/adminitb/.ssh
-    sudo chmod 700 /home/adminitb/.ssh
-    sudo chmod 600 /home/adminitb/.ssh/authorized_keys
+sudo mkdir -p /home/adminitb/.ssh  
+sudo cp /home/ubuntu/.ssh/authorized_keys /home/adminitb/.ssh/authorized_keys  
+sudo chown -R adminitb:adminitb /home/adminitb/.ssh  
+sudo chmod 700 /home/adminitb/.ssh  
+sudo chmod 600 /home/adminitb/.ssh/authorized_keys  
 
 ### Problema 3: Ansible requeria contrasenya de sudo
 
@@ -151,7 +145,7 @@ Ansible fallava amb el missatge "sudo: a password is required" perquè l'usuari 
 
 Solució: Es va afegir la regla NOPASSWD al fitxer sudoers perquè Ansible pogués executar comandes sense intervenció manual:
 
-    sudo visudo
+-    sudo visudo
     # S'afegeix: adminitb ALL=(ALL) NOPASSWD: ALL
 
 ---
