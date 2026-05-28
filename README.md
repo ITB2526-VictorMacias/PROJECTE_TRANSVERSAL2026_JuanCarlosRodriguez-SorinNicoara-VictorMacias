@@ -1,1 +1,1 @@
-[Enunciat - Projecte Transversal ASIXc 2025_2026-SoriNicoara_JuanCarlosRodriguez_VíctorMacias.pdf](https://github.com/user-attachments/files/28356306/Enunciat.-.Projecte.Transversal.ASIXc.2025_2026-SoriNicoara_JuanCarlosRodriguez_VictorMacias.pdf)
+
