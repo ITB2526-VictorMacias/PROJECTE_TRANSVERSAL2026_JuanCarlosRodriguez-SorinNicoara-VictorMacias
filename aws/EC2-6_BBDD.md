@@ -14,6 +14,7 @@ MariaDB, por defecto, solo escucha conexiones locales. Como el servidor web est�
 En el fichero de configuración /etc/mysql/mariadb.conf.d/50-server.cnf, se cambió la directiva para que escuche en todas las interfaces:
 
 ini    bind-address \= 0.0.0.0
+<img width="264" height="68" alt="image" src="https://github.com/user-attachments/assets/3d52ce4f-7021-48e0-8a55-25850f8432e8" />
 
 En el Security Group de AWS, se abrió el puerto TCP 3306, pero solo para conexiones que vengan del servidor web (34.196.1.142). Cualquier otra IP lo tiene cerrado.
 
@@ -34,6 +35,7 @@ Configuración de Calidad: una tabla sencilla con perfiles predefinidos (alta, m
 
 3.2.3 Modelo Relacional Resultante  
 El esquema final, con sus claves primarias y foráneas, queda así:
+<img width="2255" height="1768" alt="Untitled" src="https://github.com/user-attachments/assets/200a9d79-075e-47dc-81f3-eea4813a61c5" />
 
 DEPARTAMENTOS (codi\_dept \[PK\], nom\_dept, telefon\_dept)  
 EMPLEADOS (dni \[PK\], nom, cognoms, adreça, telefon, codi\_dept \[FK\])  
@@ -50,6 +52,7 @@ Se crearon tres roles diferenciados:
 Rol admin: acceso completo — puede leer, escribir, modificar estructuras y consultar la tabla de logs de auditoría.  
 Rol vendes: permisos operativos básicos (SELECT, INSERT, UPDATE) sobre clientes, pedidos y metadatos de llamadas. No puede tocar la estructura de la base de datos.  
 Rol administracio: gestiona únicamente lo relacionado con personal: empleados y departamentos.
+<img width="825" height="368" alt="image" src="https://github.com/user-attachments/assets/ed22b74d-55d7-4857-8ed32f637023a0bb" />
 
 Un ejemplo de cómo se configura esto en SQL:  
 sql-- Creación de roles  
@@ -58,14 +61,26 @@ CREATE ROLE IF NOT EXISTS 'admin\_role', 'vendes\_role';
 \-- Permisos del rol operativo  
 GRANT SELECT, INSERT, UPDATE ON Innovatetech.clients TO 'vendes\_role';  
 GRANT SELECT, INSERT, UPDATE ON Innovatetech.trucades TO 'vendes\_role';
+<img width="774" height="548" alt="image" src="https://github.com/user-attachments/assets/52571d91-1961-4153-a1aa-54c056efb7a1" />
 
 \-- Usuario de aplicación vinculado al rol  
 CREATE USER 'usr\_vendes\_01'@'100.48.147.77' IDENTIFIED BY 'PasswordSegura2026\*';  
 GRANT 'vendes\_role' TO 'usr\_vendes\_01'@'100.48.147.77';  
 SET DEFAULT ROLE 'vendes\_role' FOR 'usr\_vendes\_01'@'100.48.147.77';  
 FLUSH PRIVILEGES;  
+<img width="938" height="759" alt="image" src="https://github.com/user-attachments/assets/382cac33-da80-4bba-b20d-6b0eb950d4f1" />
+
+<img width="941" height="527" alt="image" src="https://github.com/user-attachments/assets/80231094-b143-4ec9-8687-876046eff4e5" />
+
+
 3.3.2 Mecanismos de Auditoría Automatizada (Triggers)  
 Para no depender de que nadie "se olvide" de registrar algo, la auditoría está automatizada directamente en el motor mediante triggers:
+<img width="938" height="737" alt="image" src="https://github.com/user-attachments/assets/f87689c5-91e6-4464-aab1-04f0e3afa216" />
+<img width="941" height="785" alt="image" src="https://github.com/user-attachments/assets/2c2e2745-e511-444e-89df-b74c8f8ebebb" />
+<img width="943" height="794" alt="image" src="https://github.com/user-attachments/assets/43260beb-126f-4442-84eb-6674df9b051d" />
+<img width="942" height="796" alt="image" src="https://github.com/user-attachments/assets/aa2af634-690b-4de3-a58e-45d87c95d96b" />
+<img width="941" height="676" alt="image" src="https://github.com/user-attachments/assets/796a25a6-f3a4-4463-9e4f-107cfa5315d9" />
+
 
 Control de cuota de comunicación: antes de insertar cualquier llamada, un trigger comprueba si el usuario ha agotado sus minutos mensuales. Si los ha superado, lanza un SIGNAL SQLSTATE y la inserción se cancela automáticamente.  
 Log de intentos no autorizados: si un usuario con permisos limitados intenta hacer algo que no debería, el sistema lo registra solo en la tabla AVISOS — quién lo intentó, qué operación era y en qué momento exacto — sin que el usuario infractor pueda evitarlo ni saberlo.
