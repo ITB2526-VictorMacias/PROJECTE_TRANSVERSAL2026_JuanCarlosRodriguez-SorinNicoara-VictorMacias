@@ -102,6 +102,8 @@ jicofo {
     }  
 }
 
+<img width="754" height="414" alt="Captura de pantalla 2026-05-28 190442" src="https://github.com/user-attachments/assets/f7614dd5-d5d7-41f8-a425-8a286c3269cd" />
+
 **FASE 7 — Configurar frontend Jitsi**  
 sudo sed \-i "s|bosh: 'https://34.196.1.142/' \+ subdir \+ 'http-bind',|bosh: 'https://34.196.1.142/http-bind',|" /etc/jitsi/meet/34.196.1.142-config.js
 
