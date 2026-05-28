@@ -15,7 +15,7 @@ Aquest servidor allotja el servei de directori actiu d'InnovateTech mitjançant 
 ### 1. Creació de la instància EC2
 - AMI: Ubuntu Server 24.04 LTS
 - Tipus: t2.micro (free tier)
-- Par de claus: `PROYECTO_TRANSVERSAL.pem`
+- Par de claus: PROYECTO_TRANSVERSAL.pem
 - Security Group `sg-ldap` amb les següents regles d'entrada:
   - SSH: port 22, source 0.0.0.0/0
   - LDAP: port 389, source 0.0.0.0/0
