@@ -175,20 +175,20 @@ La sala del CPD està situada a la planta baixa de l'edifici, en una zona interi
 |-----|--------|----------------------|
 | EC2-1 | Servidor Web (Apache) + SFTP | ✅ Sí |
 | EC2-2 | Directori Actiu (OpenLDAP) | ✅ Sí |
-| EC2-3 | Centralització de logs | ❌ (P2) |
-| EC2-4 | Streaming d'àudio (Icecast) | ❌ (P2) |
-| EC2-5 | Streaming de vídeo + Jitsi Meet | ❌ (P3) |
-| EC2-6 | Base de dades MySQL | ❌ (P3) |
+| EC2-3 | Centralització de logs | ❌ |
+| EC2-4 | Streaming d'àudio (Icecast) | ❌ |
+| EC2-5 | Streaming de vídeo + Jitsi Meet | ❌ |
+| EC2-6 | Base de dades MySQL | ❌ |
 
 ### Configuració de seguretat AWS
 - Cada EC2 amb el seu propi Security Group amb el mínim de ports oberts.
 - Accés SSH únicament amb clau pública/privada, sense contrasenyes.
-- Usuari d'administració específic `adminitb` (no s'utilitza l'usuari per defecte).
+- Usuari d'administració específic adminitb (no s'utilitza l'usuari per defecte).
 
 ### Ansible
 - Les màquines EC2-1 i EC2-2 estan configurades completament amb Ansible.
-- Playbook `setup.yml` que automatitza la instal·lació i configuració de tots els serveis.
-- Inventari `inventory.ini` amb totes les màquines del projecte.
+- Playbook setup.yml que automatitza la instal·lació i configuració de tots els serveis.
+- Inventari inventory.ini amb totes les màquines del projecte.
 
 ---
 
