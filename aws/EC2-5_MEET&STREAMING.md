@@ -226,11 +226,13 @@ Navegador
  
 [https://34.196.1.142/stream](https://34.196.1.142/stream)  
 VLC  
-![][image7]  
+<img width="541" height="301" alt="image" src="https://github.com/user-attachments/assets/0fda0481-ec12-4e5d-b44c-4948af8376dc" />
+
 [http://34.196.1.142:8090/hls/test.m3u8](http://34.196.1.142:8090/hls/test.m3u8)  
 Stream RTMP (OBS)  
 rtmp://34.196.1.142/live  
-![][image8]
+<img width="538" height="292" alt="image" src="https://github.com/user-attachments/assets/4ba215e7-6266-4fb7-b3b8-fb43ba4540e0" />
+
 
 ### **APUNTES:**
 
